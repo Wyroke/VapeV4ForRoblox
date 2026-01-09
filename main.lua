@@ -2,7 +2,7 @@ repeat task.wait() until game:IsLoaded()
 if shared.vape then shared.vape:Uninject() end
 
 -- why do exploits fail to implement anything correctly? Is it really that hard?
--- wave and volt suck ass
+-- wave and volt suck ass (spec was here)
 if identifyexecutor then
 	if table.find({'Argon', 'Volt', 'Wave'}, ({identifyexecutor()})[1]) then
 		getgenv().setthreadidentity = nil
