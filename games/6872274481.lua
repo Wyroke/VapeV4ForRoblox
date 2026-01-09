@@ -4512,7 +4512,7 @@ run(function()
 				bedwars.ProjectileController.createLocalProjectile = old
 			end
 		end,
-		Tooltip = 'Swap to crossbow and shoot'
+		Tooltip = 'automatically\'s make you shoot all types of projectiles when near a player'
 	})
 	
 end)
