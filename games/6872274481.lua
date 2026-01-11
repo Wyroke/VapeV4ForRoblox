@@ -1672,36 +1672,7 @@ run(function()
 		end
 		return mag
 	end
-												
-	ZephyrExploit = vape.Categories.Blatant:CreateModule({
-		Name = 'ZephyrExploit',
-		Function = function(callback)
-		end
-			if callback then
-				old = zepcontroller.updateSpeed
-				old2 = zepcontroller.updateJump
-				zepcontroller.updateSpeed = function(v1,v2) 
-					v1 = {currentSpeedModifier = nil}
-					v2 = 5
-					return old(v1,v2)
-				end
-				zepcontroller.updateJump = function(v1,v2) 
-					v1 = {doubleJumpActive = nil}
-					v2 = 5
-					return old2(v1,v2)
-				end
-			else
-				zepcontroller.updateSpeed = old
-				zepcontroller.updateJump = old2
-				old = nil
-				old2 = nil
-			end
-		end,
-		Tooltip = 'Anti-Cheat Bypasser!'
-	})
-
-end)
-													
+															
 	AntiFall = vape.Categories.Blatant:CreateModule({
 		Name = 'AntiFall',
 		Function = function(callback)
