@@ -59,6 +59,7 @@ local uipallet = {
 }
 
 local getcustomassets = {
+	['newvape/assets/new/guivapev2.png'] = 'rbxassetid://82637944606318',
 	['newvape/assets/new/add.png'] = 'rbxassetid://14368300605',
 	['newvape/assets/new/alert.png'] = 'rbxassetid://14368301329',
 	['newvape/assets/new/allowedicon.png'] = 'rbxassetid://14368302000',
