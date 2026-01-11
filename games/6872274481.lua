@@ -1680,9 +1680,7 @@ run(function()
 	ZephyrExploit = vape.Categories.Blatant:CreateModule({
 		Name = 'ZephyrExploit',
 		Function = function(callback)
-   	
-				return
-			end 
+		end
 			if callback then
 				old = zepcontroller.updateSpeed
 				old2 = zepcontroller.updateJump
