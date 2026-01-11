@@ -2911,21 +2911,27 @@ run(function()
 end)
 	
 run(function()
+	local SilentAim = {Enabled = true}
 	local TargetPart
 	local Targets
 	local FOV
 	local OtherProjectiles
+	local Blacklist
+
 	local rayCheck = RaycastParams.new()
 	rayCheck.FilterType = Enum.RaycastFilterType.Include
 	rayCheck.FilterDescendantsInstances = {workspace:FindFirstChild('Map')}
 	local old
 	
-	local ProjectileAimbot = vape.Categories.Blatant:CreateModule({
-		Name = 'ProjectileAimbot',
+	local ProjectileAimbot; ProjectileAimbot = vape.Categories.Blatant:CreateModule({
+		Name = 'Projectile Aimbot',
 		Function = function(callback)
 			if callback then
+				local newpos = nil
+				local canshoot = os.clock()
+				
 				old = bedwars.ProjectileController.calculateImportantLaunchValues
-				bedwars.ProjectileController.calculateImportantLaunchValues = function(...)
+				bedwars.ProjectileController.calculateImportantLaunchValues = function(...)	
 					local self, projmeta, worldmeta, origin, shootpos = ...
 					local plr = entitylib.EntityMouse({
 						Part = 'RootPart',
@@ -2945,11 +2951,15 @@ run(function()
 						if (not OtherProjectiles.Enabled) and not projmeta.projectile:find('arrow') then
 							return old(...)
 						end
+
+						if table.find(Blacklist.ListEnabled, projmeta.projectile) then
+							return old(...)
+						end
 	
 						local meta = projmeta:getProjectileMeta()
 						local lifetime = (worldmeta and meta.predictionLifetimeSec or meta.lifetimeSec or 3)
 						local gravity = (meta.gravitationalAcceleration or 196.2) * projmeta.gravityMultiplier
-						local projSpeed = (meta.launchVelocity or 100)
+						local projSpeed = (meta.launchVelocity or 100) 
 						local offsetpos = pos + (projmeta.projectile == 'owl_projectile' and Vector3.zero or projmeta.fromPositionOffset)
 						local balloons = plr.Character:GetAttribute('InflatedBalloons')
 						local playerGravity = workspace.Gravity
@@ -2961,8 +2971,8 @@ run(function()
 						if plr.Character.PrimaryPart:FindFirstChild('rbxassetid://8200754399') then
 							playerGravity = 6
 						end
-	
-						if plr.Player:GetAttribute('IsOwlTarget') then
+
+						if not plr.NPC and plr.Player:GetAttribute('IsOwlTarget') then
 							for _, owl in collectionService:GetTagged('Owl') do
 								if owl:GetAttribute('Target') == plr.Player.UserId and owl:GetAttribute('Status') == 2 then
 									playerGravity = 0
@@ -2971,9 +2981,14 @@ run(function()
 						end
 	
 						local newlook = CFrame.new(offsetpos, plr[TargetPart.Value].Position) * CFrame.new(projmeta.projectile == 'owl_projectile' and Vector3.zero or Vector3.new(bedwars.BowConstantsTable.RelX, bedwars.BowConstantsTable.RelY, bedwars.BowConstantsTable.RelZ))
-						local calc = prediction.SolveTrajectory(newlook.p, projSpeed, gravity, plr[TargetPart.Value].Position, projmeta.projectile == 'telepearl' and Vector3.zero or plr[TargetPart.Value].Velocity, playerGravity, plr.HipHeight, plr.Jumping and 42.6 or nil, rayCheck)
+						local calc = prediction.SolveTrajectory(newlook.p, projSpeed, gravity, plr[TargetPart.Value].Position, projmeta.projectile == 'telepearl' and Vector3.zero or plr[TargetPart.Value].Velocity, playerGravity, plr.HipHeight, plr.Jumping and 42.6 or nil, rayCheck, plr.Humanoid.MoveDirection ~= Vector3.zero, lplr:GetNetworkPing())
 						if calc then
-							targetinfo.Targets[plr] = tick() + 1
+							targetinfo.Targets[plr] = os.clock() + 1
+							if not SilentAim.Enabled then
+								newpos = calc - Vector3.new(0, 4, 0)
+								canshoot = os.clock() + 0.1
+								return old(...)
+							end
 							return {
 								initialVelocity = CFrame.new(newlook.Position, calc).LookVector * projSpeed,
 								positionFrom = offsetpos,
@@ -2986,6 +3001,23 @@ run(function()
 	
 					return old(...)
 				end
+
+				ProjectileAimbot:Clean(runService.PreRender:Connect(function(delta)
+					if canshoot > os.clock() and newpos and mousemoverel and not SilentAim.Enabled and entitylib.EntityMouse({
+						Part = 'RootPart',
+						Range = FOV.Value,
+						Players = Targets.Players.Enabled,
+						NPCs = Targets.NPCs.Enabled,
+						Wallcheck = Targets.Walls.Enabled
+					}) then
+						local pos, vis = workspace.CurrentCamera:WorldToViewportPoint(newpos)
+
+						if vis and isrbxactive() then
+							pos = (Vector2.new(pos.X, pos.Y) - game.UserInputService:GetMouseLocation()) * (100 * delta / 3)
+							mousemoverel(pos.X, pos.Y)
+						end
+					end
+				end))
 			else
 				bedwars.ProjectileController.calculateImportantLaunchValues = old
 			end
@@ -3006,9 +3038,20 @@ run(function()
 		Max = 1000,
 		Default = 1000
 	})
+	--SilentAim = ProjectileAimbot:CreateToggle({Name = 'Silent aim', Default = true})
 	OtherProjectiles = ProjectileAimbot:CreateToggle({
 		Name = 'Other Projectiles',
-		Default = true
+		Default = true,
+		Function = function(call)
+			if Blacklist then
+				Blacklist.Object.Visible = call
+			end
+		end
+	})
+	Blacklist = ProjectileAimbot:CreateTextList({
+		Name = 'Blacklist',
+		Darker = true,
+		Default = {'telepearl'}
 	})
 end)
 	
