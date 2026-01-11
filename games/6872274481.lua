@@ -1680,8 +1680,7 @@ run(function()
 	ZephyrExploit = vape.Categories.Blatant:CreateModule({
 		Name = 'ZephyrExploit',
 		Function = function(callback)
-   			if role ~= "owner" and role ~= "coowner" and role ~= "admin" and role ~= "friend" and role ~= "premium" then
-				vape:CreateNotification("Onyx", "You don’t have access to this.", 10, "alert")
+   	
 				return
 			end 
 			if callback then
