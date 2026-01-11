@@ -1673,10 +1673,6 @@ run(function()
 		return mag
 	end
 												
-run(function()
-	local ZephyrExploit
-	local zepcontroller = require(lplr.PlayerScripts.TS.controllers.games.bedwars.kit.kits['wind-walker']['wind-walker-controller'])
-	local old, old2
 	ZephyrExploit = vape.Categories.Blatant:CreateModule({
 		Name = 'ZephyrExploit',
 		Function = function(callback)
