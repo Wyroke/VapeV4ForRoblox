@@ -7362,6 +7362,12 @@ run(function()
 					end
 				end)
 	
+				Breaker:Clean(runService.PreSimulation:Connect(function(dt)
+					if AutoAim.Enabled and targetting then
+						gameCamera.CFrame = gameCamera.CFrame:Lerp(CFrame.lookAt(gameCamera.CFrame.p, targetting), AimSpeed.Value * dt)
+					end
+				end))
+
 				repeat
 					task.wait(1 / UpdateRate.Value)
 					if not Breaker.Enabled then break end
@@ -7397,14 +7403,23 @@ run(function()
 			return val == 1 and 'stud' or 'studs'
 		end
 	})
-	BreakSpeed = Breaker:CreateSlider({
-		Name = 'Break speed',
+	Delay = Breaker:CreateSlider({
+		Name = 'Break Delay',
 		Min = 0,
 		Max = 0.3,
 		Default = 0.25,
-		Decimal = 100,
-		Suffix = 'seconds'
+		Decimal = 5,
+		Suffix = function(val)
+			return 's'
+		end
 	})
+	AimSpeed = Breaker:CreateSlider({
+		Name = 'Aim Speed',
+		Min = 1,
+		Max = 20,
+		Default = 20
+	})
+	AimSpeed.Object.Visible = false
 	UpdateRate = Breaker:CreateSlider({
 		Name = 'Update rate',
 		Min = 1,
@@ -7427,6 +7442,12 @@ run(function()
 	Bed = Breaker:CreateToggle({
 		Name = 'Break Bed',
 		Default = true
+	})
+	AutoAim = Breaker:CreateToggle({
+		Name = 'Auto Aim',
+		Function = function(call)
+			AimSpeed.Object.Visible = call
+		end
 	})
 	LuckyBlock = Breaker:CreateToggle({
 		Name = 'Break Lucky Block',
@@ -7452,7 +7473,9 @@ run(function()
 	})
 	Animation = Breaker:CreateToggle({Name = 'Animation'})
 	SelfBreak = Breaker:CreateToggle({Name = 'Self Break'})
-	InstantBreak = Breaker:CreateToggle({Name = 'Instant Break'})
+	WallCheck = Breaker:CreateToggle({Name = 'Wall Check'})
+	Cache = Breaker:CreateToggle({Name = 'Break through block'})
+	AutoTool = Breaker:CreateToggle({Name = 'Auto Tool'})
 	LimitItem = Breaker:CreateToggle({
 		Name = 'Limit to items',
 		Tooltip = 'Only breaks when tools are held'
