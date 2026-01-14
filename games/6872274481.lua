@@ -7331,7 +7331,21 @@ run(function()
 	
 		return false
 	end
-	AutoWin = vape.Categories.Minigames:CreateModule({
+	run(function()
+		local AutoWin
+		local empty
+		local Dashes = {Value = 2}
+		local function Reset(db)
+			if db then
+				vape:CreateNotification("AutoWin", "Teleporting to empty game!", 4)
+				local TeleportService = game:GetService("TeleportService")
+				local data = TeleportService:GetLocalPlayerTeleportData()
+				AutoWin:Clean(TeleportService:Teleport(game.PlaceId, lplr, data))
+			else
+				return
+			end
+		end
+		AutoWin = vape.Categories.AltFarm:CreateModule({
 			Name = 'YuziAutoWin',
 			Function = function(callback)
 				if not callback then
