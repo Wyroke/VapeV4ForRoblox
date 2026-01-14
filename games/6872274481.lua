@@ -9048,7 +9048,7 @@ run(function()
 	local old
 	local inf = math.huge or 9e9
 	BCR = vape.Categories.Blatant:CreateModule({
-		Name = "BlockCPSRemover",
+		Name = "FastPlacing",
 		Function = function(callback)
 			if callback then
 				old = bedwars.SharedConstants.CpsConstants['BLOCK_PLACE_CPS']
@@ -9064,8 +9064,8 @@ run(function()
 		Suffix = "s",
 		Tooltip = "Changes the limit to the CPS cap(0 = remove)",
 		Default = 0,
-		Min = 0,
-		Max = 100,
+		Min = 120,
+		Max = 120,
 		Function = function()
 			if BCR.Enabled then
 				bedwars.SharedConstants.CpsConstants['BLOCK_PLACE_CPS'] = Value.Value == 0 and inf or Value.Value
