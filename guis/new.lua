@@ -5802,7 +5802,13 @@ mainapi:CreateCategory({
 	Icon = getcustomasset('ReVape/assets/new/af.png'),
 	Size = UDim2.fromOffset(20, 20),
 	Position = UDim2.fromOffset(10,10)
-})							
+})
+mainapi:CreateCategory({
+	Name = 'BetterKit',
+	Icon = getcustomasset('ReVape/assets/new/support.png'),
+	Size = UDim2.fromOffset(20, 20),
+	Position = UDim2.fromOffset(13,10)
+})
 mainapi.Categories.Main:CreateDivider('misc')
 
 --[[
@@ -6093,8 +6099,9 @@ guipane:CreateButton({
 			InventoryCategory = 7,
 			MinigamesCategory = 8,
 			AltFarmCategory	= 9,
-			FriendsCategory = 10,
-			ProfilesCategory = 11
+			BetterKitCategory = 10,																									
+			FriendsCategory = 11,
+			ProfilesCategory = 12
 		}
 		local categories = {}
 		for _, v in mainapi.Categories do
