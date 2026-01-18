@@ -7382,7 +7382,7 @@ run(function()
 	end
 																																																																																																										
 	Breaker = vape.Categories.Utility:CreateModule({
-		Name = 'Nuker',
+		Name = 'Breaker',
 		Function = function(callback)
 			if callback then
 				for _ = 1, 30 do
