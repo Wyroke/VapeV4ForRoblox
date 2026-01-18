@@ -5797,6 +5797,12 @@ mainapi:CreateCategory({
 	Icon = getcustomasset('newvape/assets/new/miniicon.png'),
 	Size = UDim2.fromOffset(19, 12)
 })
+mainapi:CreateCategory({
+	Name = 'AltFarm',
+	Icon = getcustomasset('ReVape/assets/new/af.png'),
+	Size = UDim2.fromOffset(20, 20),
+	Position = UDim2.fromOffset(10,10)
+})							
 mainapi.Categories.Main:CreateDivider('misc')
 
 --[[
@@ -6086,6 +6092,7 @@ guipane:CreateButton({
 			WorldCategory = 6,
 			InventoryCategory = 7,
 			MinigamesCategory = 8,
+			AltfarmCategory	= 8,
 			FriendsCategory = 9,
 			ProfilesCategory = 10
 		}
