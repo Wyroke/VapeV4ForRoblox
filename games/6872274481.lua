@@ -3048,6 +3048,27 @@ run(function()
 end)
 																																			
 run(function()
+	local MHA
+	MHA = vape.Categories.AltFarm:CreateModule({
+		Name = "MatchHistoryView",
+		Function = function(callback)
+			if callback then
+				MHA:Toggle(false)
+				local d = nil
+				bedwars.MatchHistroyController:requestMatchHistory(lplr.Name):andThen(function(Data)
+					if Data then
+						bedwars.AppController:openApp({app = bedwars.MatchHistroyApp,appId = "MatchHistoryApp",},Data)
+					end
+				end)
+			else
+				return
+			end
+		end,
+		Tooltip = "allows you to see peoples history without being in the same game with you"
+	})																								
+end)
+																																		
+run(function()
 	local Desync
 	local New
 	Desync = vape.Categories.World:CreateModule({
