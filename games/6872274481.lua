@@ -2600,7 +2600,7 @@ run(function()
 		end
 
 		if LegitAura.Enabled then
-			if (tick() - bedwars.SwordController.lastSwing) > 0.11 then return false end
+			if (tick() - bedwars.SwordController.lastSwing) > 0.10 then return false end
 		end
 
 		return sword, meta
@@ -2645,7 +2645,7 @@ run(function()
 								started = true
 
 								if AnimationMode.Value == 'Random' then
-									anims.Random = {{CFrame = CFrame.Angles(math.rad(math.random(1, 360)), math.rad(math.random(1, 360)), math.rad(math.random(1, 360))), Time = 0}}
+									anims.Random = {{CFrame = CFrame.Angles(math.rad(math.random(1, 360)), math.rad(math.random(1, 360)), math.rad(math.random(1, 360))), Time = 0.4}}
 								end
 
 								for _, v in anims[AnimationMode.Value] do
@@ -2672,7 +2672,7 @@ run(function()
 					end)
 				end
 
-				local swingCooldown = 0
+				local swingCooldown = 0.5
 				repeat
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
