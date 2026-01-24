@@ -4989,41 +4989,179 @@ run(function()
 		return crossbows
 	end
 	
-	vape.Categories.Utility:CreateModule({
+	local AutoShoot = vape.Categories.Utility:CreateModule({
 		Name = 'AutoShoot',
 		Function = function(callback)
 			if callback then
+				autoShootEnabled = true
 				old = bedwars.ProjectileController.createLocalProjectile
 				bedwars.ProjectileController.createLocalProjectile = function(...)
 					local source, data, proj = ...
-					if source and (proj == 'arrow' or proj == 'fireball') and not shooting then
+					if source and proj and (proj == 'arrow' or bedwars.ProjectileMeta[proj] and bedwars.ProjectileMeta[proj].combat) and not _G.autoShootLock then
 						task.spawn(function()
-							local bows = getCrossbows()
+							if not hasArrows() then
+								return
+							end
+							
+							if FirstPersonCheck.Enabled and not isFirstPerson() then
+								return
+							end
+							
+							if KillauraTargetCheck.Enabled then
+								if not store.KillauraTarget then
+									return
+								end
+							else
+								if not hasValidTarget() then
+									return
+								end
+							end
+							
+							local bows = getBows()
 							if #bows > 0 then
-								shooting = true
-								task.wait(0.15)
+								_G.autoShootLock = true
+								task.wait(AutoShootWaitDelay.Value)
 								local selected = store.inventory.hotbarSlot
-								for _, v in getCrossbows() do
+								for _, v in bows do
 									if hotbarSwitch(v) then
 										task.wait(0.05)
-										mouse1click()
+										leftClick()
 										task.wait(0.05)
 									end
 								end
 								hotbarSwitch(selected)
-								shooting = false
+								_G.autoShootLock = false
 							end
 						end)
 					end
 					return old(...)
 				end
+				
+				task.spawn(function()
+					repeat
+						task.wait(0.1)
+						if autoShootEnabled and not _G.autoShootLock then
+							if not hasArrows() then
+								continue
+							end
+							
+							if FirstPersonCheck.Enabled and not isFirstPerson() then
+								continue
+							end
+							
+							if KillauraTargetCheck.Enabled then
+								if not store.KillauraTarget then
+									continue
+								end
+							else
+								if not hasValidTarget() then
+									continue
+								end
+							end
+							
+							local currentTime = tick()
+							if (currentTime - lastAutoShootTime) >= AutoShootInterval.Value then
+								local bows = getBows()
+								local swordSlot = getSwordSlot()
+								
+								if #bows > 0 then
+									_G.autoShootLock = true
+									lastAutoShootTime = currentTime
+									local originalSlot = store.inventory.hotbarSlot
+									
+									for _, bowSlot in bows do
+										if hotbarSwitch(bowSlot) then
+											task.wait(AutoShootSwitchSpeed.Value)
+											leftClick()
+											task.wait(0.05)
+										end
+									end
+									
+									if swordSlot then
+										hotbarSwitch(swordSlot)
+									else
+										hotbarSwitch(originalSlot)
+									end
+									
+									_G.autoShootLock = false
+								end
+							end
+						end
+					until not autoShootEnabled
+				end)
 			else
-				bedwars.ProjectileController.createLocalProjectile = old
+				autoShootEnabled = false
+				if old then
+					bedwars.ProjectileController.createLocalProjectile = old
+				end
+				_G.autoShootLock = false
 			end
 		end,
-		Tooltip = 'Automatically crossbow macro\'s'
+		Tooltip = 'Automatically switches to bows and shoots them'
 	})
 	
+	AutoShootInterval = AutoShoot:CreateSlider({
+		Name = 'Shoot Interval',
+		Min = 0.1,
+		Max = 3,
+		Default = 0.5,
+		Decimal = 10,
+		Suffix = function(val)
+			return val == 1 and 'second' or 'seconds'
+		end,
+		Tooltip = 'How often to auto-shoot bows'
+	})
+	
+	AutoShootSwitchSpeed = AutoShoot:CreateSlider({
+		Name = 'Switch Delay',
+		Min = 0,
+		Max = 0.2,
+		Default = 0.05,
+		Decimal = 100,
+		Suffix = 's',
+		Tooltip = 'Delay between switching and shooting (lower = faster)'
+	})
+	
+	AutoShootWaitDelay = AutoShoot:CreateSlider({
+		Name = 'Wait Delay',
+		Min = 0,
+		Max = 1,
+		Default = 0,
+		Decimal = 100,
+		Suffix = 's',
+		Tooltip = 'Delay before shooting (helps prevent ghosting)'
+	})
+	
+	AutoShootRange = AutoShoot:CreateSlider({
+		Name = 'Range',
+		Min = 1,
+		Max = 30,
+		Default = 20,
+		Suffix = function(val)
+			return val == 1 and 'stud' or 'studs'
+		end,
+		Tooltip = 'Maximum range to auto-shoot'
+	})
+	
+	AutoShootFOV = AutoShoot:CreateSlider({
+		Name = 'FOV',
+		Min = 1,
+		Max = 180,
+		Default = 90,
+		Tooltip = 'Field of view for target detection (1-180 degrees)'
+	})
+	
+	KillauraTargetCheck = AutoShoot:CreateToggle({
+		Name = 'Require Killaura Target',
+		Default = false,
+		Tooltip = 'Only auto-shoot when Killaura has a target (overrides Range/FOV)'
+	})
+	
+	FirstPersonCheck = AutoShoot:CreateToggle({
+		Name = 'First Person Only',
+		Default = false,
+		Tooltip = 'Only works in first person mode'
+	})
 end)
 	
 run(function()
