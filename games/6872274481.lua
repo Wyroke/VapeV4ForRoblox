@@ -2600,7 +2600,7 @@ run(function()
 		end
 
 		if LegitAura.Enabled then
-			if (tick() - bedwars.SwordController.lastSwing) > 1 then return false end
+			if (tick() - bedwars.SwordController.lastSwing) > 0 then return false end
 		end
 
 		return sword, meta
@@ -2666,13 +2666,13 @@ run(function()
 							end
 
 							if not started then
-								task.wait(1 / UpdateRate.Value)
+								task.wait(0.3 / UpdateRate.Value)
 							end
 						until (not Killaura.Enabled) or (not Animation.Enabled)
 					end)
 				end
 
-				local swingCooldown = 1
+				local swingCooldown = 0
 				repeat
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
@@ -2732,7 +2732,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									if delta.Magnitude < 14.4 and ChargeTime.Value > 1 then
+									if delta.Magnitude < 14.4 and ChargeTime.Value > 0 then
 										AnimDelay = tick()
 									end
 
