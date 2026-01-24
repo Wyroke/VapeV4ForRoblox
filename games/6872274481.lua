@@ -2732,7 +2732,7 @@ run(function()
 									store.attackReach = (delta.Magnitude * 100) // 1 / 100
 									store.attackReachUpdate = tick() + 1
 
-									if delta.Magnitude < 14.4 and ChargeTime.Value > 0 then
+									if delta.Magnitude < 14.4 and ChargeTime.Value > 1 then
 										AnimDelay = tick()
 									end
 
