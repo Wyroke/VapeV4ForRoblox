@@ -2600,7 +2600,7 @@ run(function()
 		end
 
 		if LegitAura.Enabled then
-			if (tick() - bedwars.SwordController.lastSwing) > 0.14 then return false end
+			if (tick() - bedwars.SwordController.lastSwing) > 0.11 then return false end
 		end
 
 		return sword, meta
@@ -2739,7 +2739,7 @@ run(function()
 									AttackRemote:FireServer({
 										weapon = sword.tool,
 										chargedAttack = {chargeRatio = 0},
-										lastSwingServerTimeDelta = 0.5,
+										lastSwingServerTimeDelta = 0.4,
 										entityInstance = v.Character,
 										validate = {
 											raycast = {
@@ -3278,58 +3278,59 @@ end)
 	
 run(function()
 	local NoFall
+	local Chance
 	local DamageAccuracy
-
-	local rayParams = RaycastParams.new()
 	local rand = Random.new()
-
-	NoFall = vape.Categories.Blatant:CreateModule({ 
-		Name = 'No Fall',
+	local rayParams = RaycastParams.new()
+	NoFall = vape.Categories.Blatant:CreateModule({
+		Name = 'NoFall',
+		Tooltip = 'Prevents or reduces fall damage.',
 		Function = function(callback)
 			if callback then
-				local tracked, extraGravity, velocity = 0, 0, 0
-				NoFall:Clean(runService.PreSimulation:Connect(function(dt)
-					if entitylib.isAlive then
-						local root = store.rootpart or entitylib.character.RootPart
-						if root.AssemblyLinearVelocity.Y < -85 then
-							rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
-							rayParams.CollisionGroup = root.CollisionGroup
-
-							local rootSize = root.Size.Y / 2.5 + entitylib.character.HipHeight
-							local ray = workspace:Blockcast(root.CFrame, Vector3.new(3, 3, 3), Vector3.new(0, (tracked * 0.1) - rootSize, 0), rayParams)
-							if not ray then
-								local Failed = rand:NextNumber(0, 100) < (DamageAccuracy.Value)
-								local velo = root.AssemblyLinearVelocity.Y
-
-								if Failed then 
-									root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, velo + 0.5, root.AssemblyLinearVelocity.Z)
-								else
-									root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, -86, root.AssemblyLinearVelocity.Z)
+					local extraGravity = 0
+					local tracked = 0
+					NoFall:Clean(runService.PreSimulation:Connect(function(dt)
+						if entitylib.isAlive then
+							local root = entitylib.character.RootPart
+							if root.AssemblyLinearVelocity.Y < -85 then
+								rayParams.FilterDescendantsInstances = {lplr.Character, gameCamera}
+								rayParams.CollisionGroup = root.CollisionGroup
+								
+								local rootSize = root.Size.Y / 2 + entitylib.character.HipHeight
+								local ray = workspace:Blockcast(root.CFrame, Vector3.new(3, 3, 3), Vector3.new(0, (tracked * 0.1) - rootSize, 0), rayParams)
+								if not ray then
+									local Y = root.AssemblyLinearVelocity.Y
+									local rng = rand:NextNumber(0,100)
+									if rng >= Chance.Value then
+										root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, Y, root.AssemblyLinearVelocity.Z)
+									else
+										root.AssemblyLinearVelocity = Vector3.new(root.AssemblyLinearVelocity.X, (-86 * (DamageAccuracy.Value / 100)), root.AssemblyLinearVelocity.Z)
+										root.CFrame += Vector3.new(0, extraGravity * dt , 0)
+										extraGravity += -workspace.Gravity * dt																											
+									end																												
 								end
-
-								velocity = velo
-								root.CFrame = root.CFrame + Vector3.new(0, (Failed and -extraGravity or extraGravity) * dt, 0)
-								extraGravity = extraGravity + (Failed and workspace.Gravity or -workspace.Gravity) * dt
 							else
-								velocity = root.AssemblyLinearVelocity.Y
+								extraGravity = 0
 							end
-						else
-							extraGravity = 0
 						end
-					end
-				end))
+					end))
 			end
-		end,
-		Tooltip = 'Prevents you from taking fall damage.'
+		end
 	})
-
 	DamageAccuracy = NoFall:CreateSlider({
 		Name = 'Damage Accuracy',
 		Min = 0,
 		Max = 100,
-		Suffix = '%',
 		Default = 0,
+		Suffix = '%',
 		Decimal = 5
+	})
+	Chance = NoFall:CreateSlider({
+		Name = 'Chance',
+		Min = 0,
+		Max = 100,
+		Default = 100,
+		Suffix = '%'
 	})
 end)
 	
