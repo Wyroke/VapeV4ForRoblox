@@ -2645,7 +2645,7 @@ run(function()
 								started = true
 
 								if AnimationMode.Value == 'Random' then
-									anims.Random = {{CFrame = CFrame.Angles(math.rad(math.random(1, 360)), math.rad(math.random(1, 360)), math.rad(math.random(1, 360))), Time = 0.4}}
+									anims.Random = {{CFrame = CFrame.Angles(math.rad(math.random(1, 360)), math.rad(math.random(1, 360)), math.rad(math.random(1, 360))), Time = 1}}
 								end
 
 								for _, v in anims[AnimationMode.Value] do
@@ -2672,7 +2672,7 @@ run(function()
 					end)
 				end
 
-				local swingCooldown = 0.5
+				local swingCooldown = 1
 				repeat
 					local attacked, sword, meta = {}, getAttackData()
 					Attacking = false
