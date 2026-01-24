@@ -3046,7 +3046,137 @@ run(function()
 		Tooltip = 'Only attacks while swinging manually'
 	})
 end)
-	
+																																			
+run(function()
+	local BetterZeno
+	local Delay
+	local Distance
+	local Targets
+	local Angle
+	local Sorts
+	local ShockWaveChance
+	math.randomseed(os.clock() * 1e6)
+	local roll = math.random(0,100)
+	BetterZeno = vape.Categories.BetterKit:CreateModule({
+		Name = "BetterZeno",
+		Tooltip = 'makes you play like yuta(demon at zeno for those who know ☠️☠️)',
+		Function = function(callback)
+			if store.equippedKit ~= "wizard" then
+				vape:CreateNotification("BetterZeno","Kit required only!",8,"warning")
+				return
+			end
+			if callback then
+				repeat
+		            local plrs = entitylib.AllPosition({
+		                Range = Distance.Value,
+		                Wallcheck = Targets.Walls.Enabled,
+		                Part = "RootPart",
+		                Players = Targets.Players.Enabled,
+		                NPCs = Targets.NPCs.Enabled,
+		                Sort = sortmethods[Sorts.Value]
+		            })
+		
+		            local char = entitylib.character
+		            local root = char.RootPart
+		
+		            if plrs then
+		                local ent = plrs[1]
+		                if ent and ent.RootPart then
+		                    local delta = ent.RootPart.Position - root.Position
+		                    local localFacing = root.CFrame.LookVector * Vector3.new(1, 0, 1)
+		                    local angle = math.acos(localFacing:Dot((delta * Vector3.new(1, 0, 1)).Unit))
+		                	if angle > (math.rad(Angle.Value) / 2) then task.wait(0.1); continue end
+		                    local localPosition = root.Position
+		                    local shootDir = CFrame.lookAt(localPosition, ent.RootPart.Position).LookVector
+		                    localPosition = localPosition + shootDir * math.max((localPosition - ent.RootPart.Position).Magnitude - 16, 0)
+							local ability = lplr:GetAttribute("WizardAbility")
+							if not ability then
+								task.wait(0.85)
+								continue
+							end
+							local itemType = store.hand.tool.Name.itemType
+							local targetPos = ent.RootPart.Position
+							if bedwars.AbilityController:canUseAbility(ability) then
+								bedwars.AbilityController:useAbility(ability,newproxy(true),{target = targetPos})
+								 roll = math.random(0,100)
+							end
+							if itemType == "wizard_staff_2" or itemType == "wizard_staff_3" then
+								if roll >= ShockWaveChance.Value then
+									if bedwars.AbilityController:canUseAbility("SHOCKWAVE") then
+										bedwars.AbilityController:useAbility("SHOCKWAVE",newproxy(true),{target = Vector3.zero})
+										 roll = math.random(0,100)
+									end
+								else
+									if bedwars.AbilityController:canUseAbility(ability) then
+										bedwars.AbilityController:useAbility(ability,newproxy(true),{target = targetPos})
+										 roll = math.random(0,100)
+									end
+								end
+							end
+							if itemType == "wizard_staff_3" then
+								if roll >= math.min(100, ShockWaveChance.Value + ShockWaveChance.Value)then
+									if bedwars.AbilityController:canUseAbility("LIGHTNING_STORM") then
+										bedwars.AbilityController:useAbility("LIGHTNING_STORM",newproxy(true),{target = targetPos})
+										 roll = math.random(0,100)
+									end
+								elseif roll >= ShockWaveChance.Value then
+									if bedwars.AbilityController:canUseAbility("SHOCKWAVE") then
+										bedwars.AbilityController:useAbility("SHOCKWAVE",newproxy(true),{target = Vector3.zero})
+										 roll = math.random(0,100)
+									end
+								else
+									if bedwars.AbilityController:canUseAbility(ability) then
+										bedwars.AbilityController:useAbility(ability,newproxy(true),{target = targetPos})
+										 roll = math.random(0,100)
+									end								
+								end
+							end
+		                end
+		            end
+					task.wait(1 / Delay.GetRandomValue() - math.random())
+				until not BetterZeno.Enabled
+			end
+		end
+	})
+    Targets = BetterZeno:CreateTargets({
+        Players = true,
+        NPCs = true,
+        Walls = true
+    })
+	Sorts = BetterZeno:CreateDropdown({
+		Name = "Sorts",
+		List = {'Damage','Threat','Kit','Health','Angle'}
+	})
+    Angle = BetterZeno:CreateSlider({
+        Name = "Angle",
+        Min = 0,
+        Max = 360,
+        Default = math.random(120,180)
+    })
+	Delay = BetterZeno:CreateTwoSlider({
+		Name = 'Delay',
+		Min = 0.2,
+		Max = 3,
+		Suffix = 's',
+        Decimal = 10,
+		DefaultMin = 0.5,
+		DefaultMax = 1
+	})
+    Distance = BetterZeno:CreateSlider({
+        Name = "Range",
+        Min = 1,
+        Max = 18,
+        Default = 25,
+        Suffix = function(val) return val == 1 and "stud" or "studs" end
+    })
+    ShockWaveChance = BetterZeno:CreateSlider({
+        Name = "ShockWave Chance",
+        Min = 0,
+        Max = 100,
+        Default = 40,
+    })
+end)
+																																				
 run(function()
 	local Value
 	local CameraDir
