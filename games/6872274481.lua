@@ -1408,8 +1408,10 @@ run(function()
 	    Decimal = 100
 	})
 end)
-	
-run(function()
+		
+	getgenv().swapping = os.clock()
+		
+	run(function()
 		local AutoClicker
 		local CPS
 		local BlockCPS = {}
