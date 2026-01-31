@@ -2552,7 +2552,7 @@ run(function()
     local FFlagEditor
     local FFlag 
     local Value
-    FFlagEditor = vape.Legit:CreateModule({
+    FFlagEditor = vape.Blatant:CreateModule({
         Name = "FFlagEditor",
         Tooltip = "allows you to edit a current fflag or add a fflag.",
         Function = function(callback)
