@@ -3390,46 +3390,7 @@ run(function()
 		Default = false
 	})
 end)
-																																								
-run(function()
-	local Desync
-	local New
-	Desync = vape.Categories.World:CreateModule({
-		Name = 'Desync',
-		Function = function(callback)
-			local function cb1()
-
-				if not setfflag then vape:CreateNotification("Richify", "Your current executor '"..identifyexecutor().."' does not support setfflag", 6, "warning"); return end     
-				if New.Enabled then
-					repeat
-						setfflag('DFIntDebugDefaultTargetWorldStepsPerFrame', '-2147483648')
-						setfflag('DFIntMaxMissedWorldStepsRemembered', '-2147483648')
-						setfflag('DFIntWorldStepsOffsetAdjustRate', '2147483648')
-						setfflag('DFIntDebugSendDistInSteps', '-2147483648')
-						setfflag('DFIntWorldStepMax', '-2147483648')
-						setfflag('DFIntWarpFactor', '2147483648')
-						task.wait()
-					until not Desync.Enabled
-				else
-					if callback then
-						setfflag('NextGenReplicatorEnabledWrite4', 'true')
-					else
-						setfflag('NextGenReplicatorEnabledWrite4', 'false')
-					end
-				end
-
-			end
-			local function cb2()
-				vape:CreateNotification("Desync","Disabled...",8,'warning')
-				setfflag('NextGenReplicatorEnabledWrite4', 'false')
-			end
-			vape:CreatePoll("Desync","Are you sure you want to use this?",8,"warning",cb1,cb2)
-		end,
-		Tooltip = 'Note this will ban you for client modifications.'
-	})
-	New = Desync:CreateToggle({Name="New",Tooltip='this uses the new method(u can hit people)',Default=false})
-end)
-																																			
+																																																																							
 run(function()
 	local BetterZeno
 	local Delay
