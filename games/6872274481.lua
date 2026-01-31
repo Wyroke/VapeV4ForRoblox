@@ -3048,6 +3048,134 @@ run(function()
 end)
 																																			
 run(function()
+    local BetterAdetunde
+    local BetterAdetunde_List
+
+    local adetunde_remotes = {
+        ["Shield"] = function()
+            local args = { [1] = "shield" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end,
+
+        ["Speed"] = function()
+            local args = { [1] = "speed" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end,
+
+        ["Strength"] = function()
+            local args = { [1] = "strength" }
+            local returning = game:GetService("ReplicatedStorage")
+                :WaitForChild("rbxts_include")
+                :WaitForChild("node_modules")
+                :WaitForChild("@rbxts")
+                :WaitForChild("net")
+                :WaitForChild("out")
+                :WaitForChild("_NetManaged")
+                :WaitForChild("UpgradeFrostyHammer")
+                :InvokeServer(unpack(args))
+            return returning
+        end
+    }
+
+    local current_upgrador = "Shield"
+    local hasnt_upgraded_everything = true
+    local testing = 1
+
+    BetterAdetunde = vape.Categories.BetterKit:CreateModule({
+        Name = 'BetterAdetunde',
+        Function = function(calling)
+            if calling then 
+                if store.equippedKit == "frost_hammer_kit" then
+					current_upgrador = BetterAdetunde_List.Value
+					task.spawn(function()
+						repeat
+							local returning_table = adetunde_remotes[current_upgrador]()
+							
+							if type(returning_table) == "table" then
+								local Speed = returning_table["speed"]
+								local Strength = returning_table["strength"]
+								local Shield = returning_table["shield"]
+
+								if returning_table[string.lower(current_upgrador)] == 3 then
+									if Strength and Shield and Speed then
+										if Strength == 3 or Speed == 3 or Shield == 3 then
+											if (Strength == 3 and Speed == 2 and Shield == 2) or
+											(Strength == 2 and Speed == 3 and Shield == 2) or
+											(Strength == 2 and Speed == 2 and Shield == 3) then
+												vape:CreateNotification("BetterAdetunde", "Fully upgraded everything possible!", 7,'warning')
+												hasnt_upgraded_everything = false
+											else
+												local things = {}
+												for i, v in pairs(adetunde_remotes) do
+													table.insert(things, i)
+												end
+												for i, v in pairs(things) do
+													if things[i] == current_upgrador then
+														table.remove(things, i)
+													end
+												end
+												local random = things[math.random(1, #things)]
+												current_upgrador = random
+											end
+										end
+									end
+								end
+							else
+								local things = {}
+								for i, v in pairs(adetunde_remotes) do
+									table.insert(things, i)
+								end
+								for i, v in pairs(things) do
+									if things[i] == current_upgrador then
+										table.remove(things, i)
+									end
+								end
+								local random = things[math.random(1, #things)]
+								current_upgrador = random
+							end
+							task.wait(0.1)
+						until not BetterAdetunde.Enabled or not hasnt_upgraded_everything
+					end)
+                else
+                	vape:CreateNotification("BetterAdetunde", "Kit required only!", 5,'warning')
+					BetterAdetunde:Toggle(false)
+                end
+            end
+        end
+    })
+
+    local real_list = {}
+    for i, v in pairs(adetunde_remotes) do
+        table.insert(real_list, i)
+    end
+
+    BetterAdetunde_List = BetterAdetunde:CreateDropdown({
+        Name = 'Preferred Upgrade',
+        List = real_list,
+        Function = function() end,
+        Default = "Shield"
+    })
+end)
+																																					
+run(function()
 	local MHA
 	MHA = vape.Categories.AltFarm:CreateModule({
 		Name = "MatchHistoryView",
@@ -3097,7 +3225,7 @@ run(function()
 		fish_gold = "Gold Fish",
 	}	
 
-	BetterFisher = vape.Categories.Kits:CreateModule({
+	BetterFisher = vape.Categories.BetterKit:CreateModule({
 		Name = "BetterFisher",
 		Tooltip = 'thanks to render for making this script',
 		Function = function(callback)
