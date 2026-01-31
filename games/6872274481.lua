@@ -1359,7 +1359,7 @@ run(function()
 	local Latency
 	local Rate
 	FrameBuffer = vape.Categories.Blatant:CreateModule({
-		Name = 'FrameBuffer',
+		Name = 'Desync',
 		Function = function(callback)
 			if callback then
 				repeat
