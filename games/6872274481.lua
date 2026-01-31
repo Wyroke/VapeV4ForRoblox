@@ -2547,40 +2547,7 @@ run(function()
 		Tooltip = 'Lets you sprint with a speed potion.'
 	})
 end)
-																										
-run(function()
-    local FFlagEditor
-    local FFlag 
-    local Value
-    FFlagEditor = vape.Blatant:CreateModule({
-        Name = "FFlagEditor",
-        Tooltip = "allows you to edit a current fflag or add a fflag.",
-        Function = function(callback)
-            if not callback then return end
-            if callback then
-                if not setfflag then vape:CreateNotification("FFlagEditor", "Your current executor '"..identifyexecutor().."' does not support setfflag", 6, "warning"); return end
-                local s, e = pcall(function()
-                    local FFlags = httpService:JSONDecode(FFlag.Value)
-                    for a, b in FFlags do
-                        task.spawn(function()
-                            local i = tostring(a)
-                            local v = tostring(b)
-                            setfflag(i,v)
-                        end)
-                    end
-                end)
-                if not s then
-                    vape:CreateNotification("FFlagEditor", "Error: "..e, 6, "alert")
-                end
-            end
-        end
-    })
-    FFlag = FFlagEditor:CreateTextBox({
-        Name = "JSON",
-        Tooltip = 'FFlag\'s MUST EXIST to use and MUST BE IN JSON FORM',
-    })
-end)
-																											
+																																																				
 local Attacking
 run(function()
 	local Killaura
