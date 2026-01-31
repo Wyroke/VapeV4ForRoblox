@@ -1355,6 +1355,50 @@ run(function()
 end)
 	
 run(function()
+	local FrameBuffer
+	local Latency
+	local Rate
+	FrameBuffer = vape.Categories.Blatant:CreateModule({
+		Name = 'FrameBuffer',
+		Function = function(callback)
+			if callback then
+				repeat
+					local OG = -2147483648
+					if Latency.Value == 1 then
+						Latency.Value = 1.5
+					end
+					local NEW = (OG * (Latency / 1000))
+					local NEW2 = (NEW * -1)
+					local str = tostring(NEW)
+					local str2 = tostring(NEW2)
+					setfflag('DFIntDebugDefaultTargetWorldStepsPerFrame', str)
+					setfflag('DFIntMaxMissedWorldStepsRemembered', str)
+					setfflag('DFIntWorldStepsOffsetAdjustRate', str2)
+					setfflag('DFIntDebugSendDistInSteps', str)
+					setfflag('DFIntWorldStepMax', str)
+					setfflag('DFIntWarpFactor', str2)
+					task.wait(1 / Rate.Value)
+				until not FrameBuffer.Enabled
+			end
+		end,
+	})
+	Latency = FrameBuffer:CreateSlider({
+		Name = "Latency",
+		Min = 0,
+		Max = 1000,
+		Default = 250,
+		Suffix = 'ms'
+	})
+	Rate = FrameBuffer:CreateSlider({
+		Name = "Rate",
+		Min = 0,
+		Max = 360,
+		Default = 60,
+		Suffix = 'hz'
+	})	
+end)
+		
+run(function()
 	local old
 	
 	AutoCharge = vape.Categories.Combat:CreateModule({
